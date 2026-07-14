@@ -1,20 +1,17 @@
-// Biblioteca Adafruit.
-#include <Adafruit_Sensor.h>
-#include "DHT.h"
-// Configuração de hardware.
-#define DHTPIN 2       // Pino de leitura do sensor.
-#define DHTTYPE DHT22  // Definindo o modelo do sensor.
+// Biblioteca.
+#include <AM2302-Sensor.h>
 
-DHT dht(DHTPIN, DHTTYPE);
+// Configuração de hardware.
+AM2302::AM2302_Sensor am2302{2};
 
 // Variáveis de controle de tempo.
 unsigned long previousMillis = 0;
 
 // Variável para intervalo de leitura de cinco milisegundos (para testar rapidamente).
-// const unsigned long INTERVALO_LEITURA = 5000;
+const unsigned long INTERVALO_LEITURA = 10000;
 
-// Variável para testes reais, com oito horas de duração para cada período.
-const unsigned long INTERVALO_LEITURA = 28800000;
+// Variável para testes reais, com quatro horas de duração para cada período.
+// const unsigned long INTERVALO_LEITURA = 14400000;
 
 // Estado do sistema.
 // manhã=0, tarde=1, noite=2.
@@ -54,13 +51,13 @@ void inicializarSistema() {
   // Uso da macro F() economiza memória SRAM guardando o texto na memória Flash.
   Serial.println(F("== Sistema de monitoramento SmartPai Iniciado"));
   Serial.println(F("Aguardando o primeiro ciclo de leitura..."));
-  dht.begin();
+  am2302.begin();
 }
 
 void realizarLeitura() {
   // Leitura de temperatura e umidade.
-  float umidade = dht.readHumidity();
-  float temperatura = dht.readTemperature();
+  float umidade = am2302.get_Humidity();
+  float temperatura = am2302.get_Temperature();
 
   // Avaliar a leitura.
   if (isnan(umidade) || isnan(temperatura)) {
