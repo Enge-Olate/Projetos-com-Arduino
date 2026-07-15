@@ -1,46 +1,43 @@
 #include "DHT.h"
-#define sensor 8
 #define DHTTYPE DHT22
 #define DHTPIN 2
 
-
 DHT dht(DHTPIN, DHTTYPE);
-
-int pisca_led() {
-  /* O sensor será ligado quando o led acender*/
-  pinMode(sensor, OUTPUT);
-  digitalWrite(sensor, 0);
-  delay(1000);
-  digitalWrite(sensor, 1);
-  delay(1000);
-}
-
-float leitura_temperatura() {
-  float temperatura = dht.readTemperature();
-  return temperatura;
-}
-float leitura_umidade() {
-  float umidade = dht.readHumidity();
-  return umidade;
-}
+unsigned long tempoAnterior = 0;
+const unsigned long INTERVALO_LEITURA = 7200000;
+bool stateLed = false;
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
-  pisca_led();
+  Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
   dht.begin();
   Serial.println("\t\tTreinamentos Arduino");
   Serial.println(F("\t Como está a temperatura hoje?"));
 }
 void loop() {
-  delay(500);
-  if (isnan(leitura_temperatura())) {
-    Serial.println(F("\t Sensor desligado!"));
-    return;
+  unsigned long tempoAtual = millis();
+  if (tempoAtual - tempoAnterior >= INTERVALO_LEITURA) {
+    tempoAnterior = tempoAtual;
+    stateLed = !stateLed;
+    digitalWrite(LED_BUILTIN, stateLed ? HIGH : LOW);
+
+    // Capturando leitura quando o estado do led for alto.
+    if (stateLed) {
+      float temperatura = dht.readTemperature();
+      float umidade = dht.readHumidity();
+      if (isnan(temperatura) || isnan(umidade)) {
+        Serial.println(F("\t Falha na leitura do sensor DHT!"));
+      } else {
+        Serial.print(F("\t Temperatura: "));
+        Serial.print(temperatura);
+        Serial.println(F(" °C"));
+        Serial.print(F("\t Umidade: "));
+        Serial.print(umidade);
+        Serial.println(F(" %"));
+      }
+    } else {
+      Serial.println(F("\t Aguardando próxima leitura..."));
+    }
   }
-  byte on = pisca_led();
-  if (on == 3) {
-    Serial.print(F("\t Temperatura: "));
-    Serial.println(leitura_temperatura());
-  }
-  Serial.println(on);
 }

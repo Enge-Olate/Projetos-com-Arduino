@@ -1,11 +1,11 @@
 #include <AM2302-Sensor.h>
-#define sensor 8
+#define sensor 13
 
 AM2302::AM2302_Sensor am2302{2};
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(115200);
   while(!Serial){;}
   pinMode(sensor, OUTPUT);
   digitalWrite(sensor, 1);

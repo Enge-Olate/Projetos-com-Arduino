@@ -1,17 +1,31 @@
 // Biblioteca.
+<<<<<<< HEAD
 #include <AM2302-Sensor.h>
 
 // Configuração de hardware.
 AM2302::AM2302_Sensor am2302{2};
+=======
+#include "DHT.h"
+>>>>>>> 1bf5db2 (Trocando de biblioteca para testes. AM2302-Sensor.h.)
 
+// Macro
+#define DHTTYPE DHT22
+#define DHTPIN 2
 // Variáveis de controle de tempo.
 unsigned long previousMillis = 0;
 
 // Variável para intervalo de leitura de cinco milisegundos (para testar rapidamente).
+<<<<<<< HEAD
 const unsigned long INTERVALO_LEITURA = 10000;
 
 // Variável para testes reais, com quatro horas de duração para cada período.
 // const unsigned long INTERVALO_LEITURA = 14400000;
+=======
+// const unsigned long INTERVALO_LEITURA = 10000;
+
+// Variável para testes reais, com quatro horas de duração para cada período.
+const unsigned long INTERVALO_LEITURA = 14400000;
+>>>>>>> 1bf5db2 (Trocando de biblioteca para testes. AM2302-Sensor.h.)
 
 // Estado do sistema.
 // manhã=0, tarde=1, noite=2.
@@ -19,7 +33,7 @@ uint8_t periodoAtual = 0;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial) {
     ;  // Aguarda a conexão da porta serial nativa.
   }

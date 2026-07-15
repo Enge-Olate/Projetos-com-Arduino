@@ -24,11 +24,13 @@ Este projeto realiza leituras de temperatura e umidade utilizando um sensor *DHT
 
 ## Arquitetura
 
-**millis()** - Função para o sistema continuar rodando e verificando o relógio interno para cada período de oito horas (288800000ml), para realizar as medições. Com isso o Atmega328p poderá realizar outras operações.
+- **Biblioteca** - Para esse projeto utilizei a biblioteca. [ Você pode encontrar tutoriais por aqui](https://)
 
-**isnan()** - Prevenção de corrupção de dados, se o hardware falhar, o sensor retonará NaN (not a number). O código detecta essa anomalia e emite um alerta definido.
+- **millis()** - Função para o sistema continuar rodando e verificando o relógio interno para cada período de oito horas (288800000ml), para realizar as medições. Com isso o Atmega328p poderá realizar outras operações.
 
-**F()** - Otimização de memória SRAM, essa função joga as strings para a memória flash garantindo que o programa nunca fique sem memória e trave.
+- **isnan()** - Prevenção de corrupção de dados, se o hardware falhar, o sensor retonará NaN (not a number). O código detecta essa anomalia e emite um alerta definido.
+
+- **F()** - Otimização de memória SRAM, essa função joga as strings para a memória flash garantindo que o programa nunca fique sem memória e trave.
 
 ## Fontes
 
