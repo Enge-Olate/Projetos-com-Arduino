@@ -1,31 +1,20 @@
 // Biblioteca.
-<<<<<<< HEAD
-#include <AM2302-Sensor.h>
-
-// Configuração de hardware.
-AM2302::AM2302_Sensor am2302{2};
-=======
 #include "DHT.h"
->>>>>>> 1bf5db2 (Trocando de biblioteca para testes. AM2302-Sensor.h.)
 
 // Macro
 #define DHTTYPE DHT22
 #define DHTPIN 2
+
+DHT dht(DHTPIN, DHTTYPE);
 // Variáveis de controle de tempo.
 unsigned long previousMillis = 0;
+unsigned long previousPrintMillis = 0;
 
 // Variável para intervalo de leitura de cinco milisegundos (para testar rapidamente).
-<<<<<<< HEAD
-const unsigned long INTERVALO_LEITURA = 10000;
-
+const unsigned long INTERVALO_LEITURA = 50000;
+const unsigned long INTERVALO_PRINT = 1000;
 // Variável para testes reais, com quatro horas de duração para cada período.
 // const unsigned long INTERVALO_LEITURA = 14400000;
-=======
-// const unsigned long INTERVALO_LEITURA = 10000;
-
-// Variável para testes reais, com quatro horas de duração para cada período.
-const unsigned long INTERVALO_LEITURA = 14400000;
->>>>>>> 1bf5db2 (Trocando de biblioteca para testes. AM2302-Sensor.h.)
 
 // Estado do sistema.
 // manhã=0, tarde=1, noite=2.
@@ -39,18 +28,36 @@ void setup() {
   }
   inicializarSistema();
   Serial.println(F("Aguardando dois segundos para estabilização do sensor..."));
-  delay(2000); // Único delay aceitável, poís roda só uma vez no boot.
+  delay(2000);  // Único delay aceitável, poís roda só uma vez no boot.
 
   Serial.println(F("----Realizando medição inicial----"));
   realizarLeitura();
   avancarPeriodo();
 
-  previousMillis = millis(); // Reseta o cronômetro para o próximo ciclo a contar a partir de agora.  
+  previousMillis = millis();  // Reseta o cronômetro para o próximo ciclo a contar a partir de agora.
+  previousPrintMillis = millis(); // Ampulheta.
+  Serial.println(F("----Iniciando o cronômetro----"));
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   unsigned long currentMillis = millis();
+
+  if(currentMillis - previousPrintMillis >= INTERVALO_PRINT){
+    previousPrintMillis = currentMillis;
+    unsigned long tempoPassado = currentMillis - previousMillis;
+    unsigned long tempoFaltante = INTERVALO_PRINT - tempoPassado;
+    // Imprimindo o cronômetro.
+    Serial.print(F("[Cronômetro] Tempo atual: "));
+    Serial.print(currentMillis);
+    Serial.print(F(" Última medição: "));
+    Serial.print(previousMillis);
+    Serial.print(F(" Dispara em: "));
+    Serial.print(tempoFaltante);
+    Serial.println(F(" ms"));
+
+  }
+
   if (currentMillis - previousMillis >= INTERVALO_LEITURA) {
     previousMillis = currentMillis;
 
@@ -65,13 +72,13 @@ void inicializarSistema() {
   // Uso da macro F() economiza memória SRAM guardando o texto na memória Flash.
   Serial.println(F("== Sistema de monitoramento SmartPai Iniciado"));
   Serial.println(F("Aguardando o primeiro ciclo de leitura..."));
-  am2302.begin();
+  dht.begin();
 }
 
 void realizarLeitura() {
   // Leitura de temperatura e umidade.
-  float umidade = am2302.get_Humidity();
-  float temperatura = am2302.get_Temperature();
+  float umidade = dht.readHumidity();
+  float temperatura = dht.readTemperature();
 
   // Avaliar a leitura.
   if (isnan(umidade) || isnan(temperatura)) {
@@ -88,11 +95,11 @@ void exibirDados(float temp, float umi) {
 
   Serial.print(F("Temperatura: "));
   Serial.print(temp);
-  Serial.print(F(" °C | "));
+  Serial.print(F("°C | "));
 
   Serial.print(F("Umidade: "));
   Serial.print(umi);
-  Serial.println(F(" %"));
+  Serial.println(F("%"));
 }
 
 void avancarPeriodo() {

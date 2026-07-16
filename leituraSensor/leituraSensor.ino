@@ -4,7 +4,7 @@
 
 DHT dht(DHTPIN, DHTTYPE);
 unsigned long tempoAnterior = 0;
-const unsigned long INTERVALO_LEITURA = 7200000;
+const unsigned long INTERVALO_LEITURA = 3600000;
 bool stateLed = false;
 void setup() {
   // put your setup code here, to run once:
