@@ -67,7 +67,7 @@ void mostrarDigito(int pos, int numero, bool ponto) {
 // ================= MOSTRADOR =================
 void mostrarValor(float valor) {
 
-  int v = (int)(valor * 100);  // ex: 25.3 → 253
+  int v = (int)(valor * 10);  // ex: 25.3 → 253
 
   int t1 = (v / 1000) % 10;
   int t2 = (v / 100) % 10;
@@ -75,13 +75,13 @@ void mostrarValor(float valor) {
   int t4 = v % 10;
 
   for (int i = 0; i < 50; i++) {
-    if (!v || !A0) {
+    if (v == 0) {
       digitalWrite(segmentos[7], HIGH);
     } else {
 
       mostrarDigito(0, t1, false);
-      mostrarDigito(1, t2, true);  // decimal
-      mostrarDigito(2, t3, false);
+      mostrarDigito(1, t2, false);  // decimal
+      mostrarDigito(2, t3, true);
       mostrarDigito(3, t4, false);
     }
   }
